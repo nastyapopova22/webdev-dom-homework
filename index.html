@@ -9,40 +9,7 @@
   <body>
     <div class="container">
       <ul id="List" class="comments">
-        <li class="comment">
-          <div class="comment-header">
-            <div>Глеб Фокин</div>
-            <div>12.02.22 12:18</div>
-          </div>
-          <div class="comment-body">
-            <div class="comment-text">
-              Это будет первый комментарий на этой странице
-            </div>
-          </div>
-          <div class="comment-footer">
-            <div class="likes">
-              <span class="likes-counter">3</span>
-              <button class="like-button"></button>
-            </div>
-          </div>
-        </li>
-        <li class="comment">
-          <div class="comment-header">
-            <div>Варвара Н.</div>
-            <div>13.02.22 19:22</div>
-          </div>
-          <div class="comment-body">
-            <div class="comment-text">
-              Мне нравится как оформлена эта страница! ❤
-            </div>
-          </div>
-          <div class="comment-footer">
-            <div class="likes">
-              <span class="likes-counter">75</span>
-              <button class="like-button -active-like"></button>
-            </div>
-          </div>
-        </li>
+<!--список рендерится из js-->
       </ul>
       <div class="add-form">
         <input id="name-input"
@@ -74,7 +41,87 @@
     const nameInputElement = document.getElementById("name-input");
     const colorInputElement = document.getElementById("color-input");
     const today = new Date();
+    const likeCount = document.querySelector('.like-counter');
+
+const initEventListeners = () =>{
+  const likesElements = document.querySelectorAll('.like-button');
+   for (const likeElement of likesElements) {
+
+    likeElement.addEventListener("click", () =>{
+      console.log(1);
+
+    });
+   }
+};
+initEventListeners();
+    //. создаем массив 
+   const bloks = [
+      {
+        name:"Глеб Фокин",
+        time:"12.02.22 12:18",
+        comment:"Это будет первый комментарий на этой странице",
+        likes:"3",
+      
+      },
+      {
+        name:"Варвара Н.",
+        time:"13.02.22 19:22",
+        comment:"Мне нравится как оформлена эта страница! ❤",
+        likes:"75",
+      },
+    ];
    
+
+// на основе массива сделать html разметку
+
+const renderBloks = () =>{
+
+  const bloksHtml = bloks.map((blok, index) =>{
+    return `<li class="comment">
+          <div class="comment-header">
+            <div> ${blok.name} </div>
+            <div>${blok.time}</div>
+          </div>
+          <div class="comment-body">
+            <div class="comment-text">
+              ${blok.comment} 
+            </div>
+          </div>
+          <div class="comment-footer">
+            <div class="likes">
+              <span class="likes-counter">${blok.likes} </span>
+              <button   class="like-button -active-like"  data-index="${index}"></button>
+            </div>
+          </div>
+        </li> `
+        
+//3.преобразуем массив строк в одну строчку с помощью метода join('') склеивает массив.
+      })
+      .join("");
+// 4.в список html кладем полученную строку
+     listElement.innerHTML = bloksHtml;
+
+    };
+    renderBloks();
+  //добавляем к элементу новый элемент
+    bloks.push({
+      name: nameInputElement.value,
+      comment:colorInputElement.value,
+    });
+
+    const initDeleteButtonsListeners = () =>{
+      const deleteButtonsElements = document.querySelectorAll(".like-button -active-like");
+       for (const deleteButtonElement of deleteButtonsElements) {
+        deleteButtonElement.addEventListener('click', () =>{
+         const index = deleteButtonElement.dataset.index;
+         bloks.splice(index, 1);
+         renderBloks();
+
+        });
+       }
+
+    };
+    initDeleteButtonsListeners();
 
     buttonElement.addEventListener("click", () => {
       nameInputElement.style.backgroundColor = '';
@@ -84,6 +131,10 @@
         return;
       };
     const timeNow = today.toLocaleString();
+
+    //добавляем к элементу новый элемент
+
+    
 
       const oldListHtml =listElement.innerHTML;
       listElement.innerHTML = 
@@ -105,9 +156,10 @@
             </div>
           </div>
         </li> `;
+        initEventListeners();
     });
     
-
+    
     
   
 
