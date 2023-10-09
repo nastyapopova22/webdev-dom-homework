@@ -43,17 +43,6 @@
     const today = new Date();
     const likeCount = document.querySelector('.like-counter');
 
-const initEventListeners = () =>{
-  const likesElements = document.querySelectorAll('.like-button');
-   for (const likeElement of likesElements) {
-
-    likeElement.addEventListener("click", () =>{
-      console.log(1);
-
-    });
-   }
-};
-initEventListeners();
     //. создаем массив 
    const bloks = [
       {
@@ -61,6 +50,7 @@ initEventListeners();
         time:"12.02.22 12:18",
         comment:"Это будет первый комментарий на этой странице",
         likes:"3",
+        isLike: "false",
       
       },
       {
@@ -68,9 +58,29 @@ initEventListeners();
         time:"13.02.22 19:22",
         comment:"Мне нравится как оформлена эта страница! ❤",
         likes:"75",
+        isLike: "false",
       },
     ];
    
+
+
+const initEventListeners = () =>{
+  const likesElements = document.querySelectorAll('.like-button');
+   for (const likeElement of likesElements) {
+
+    likeElement.addEventListener("click", () =>{
+      const index = likeElement.dataset.index;
+      if (bloks(index).isLike === false){   //если не поставлен
+        bloks(index).isLike = true; //ставим
+        bloks(index).like++; //и +1 к счетчику лайков
+      } else { //в ином случае
+        bloks(index).isLike = false; //убираем
+        bloks(index).like--; //вычитаем лайк
+      }
+    });
+  }
+};
+
 
 // на основе массива сделать html разметку
 
@@ -103,6 +113,9 @@ const renderBloks = () =>{
 
     };
     renderBloks();
+    initEventListeners();
+
+    
   //добавляем к элементу новый элемент
     bloks.push({
       name: nameInputElement.value,
@@ -116,7 +129,6 @@ const renderBloks = () =>{
          const index = deleteButtonElement.dataset.index;
          bloks.splice(index, 1);
          renderBloks();
-
         });
        }
 
