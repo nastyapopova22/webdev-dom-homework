@@ -43,8 +43,8 @@
     const today = new Date();
     const likeCount = document.querySelector('.like-counter');
 
-    //. создаем массив 
-   const bloks = [
+   
+   const bloks = [   // создаем массив 
       {
         name:"Глеб Фокин",
         time:"12.02.22 12:18",
@@ -78,13 +78,14 @@ const initEventListeners = () =>{
         bloks[index].likes--; //вычитаем лайк
       }
      renderBloks() 
+     initEventListeners()
     });
   }
 };
 initEventListeners()
-// на основе массива сделать html разметку
 
-const renderBloks = () =>{
+
+const renderBloks = () =>{ // на основе массива сделать html разметку
 
   const bloksHtml = bloks.map((blok, index) =>{
     return `<li class="comment">
@@ -99,25 +100,20 @@ const renderBloks = () =>{
           </div>
           <div class="comment-footer">
             <div class="likes">
-              <span class="likes-counter" data-index="${index}">${blok.likes} </span>
-              <button   class="like-button -active-like"  data-index="${index}"></button>
+              <span class="likes-counter">${blok.likes} </span>
+              <button   class="like-button ${blok.isLike ? '-active-like' : ''} "  data-index="${index}"></button>
             </div>
           </div>
         </li> `
-        
-//3.преобразуем массив строк в одну строчку с помощью метода join('') склеивает массив.
       })
-      .join("");
-// 4.в список html кладем полученную строку
-     listElement.innerHTML = bloksHtml;
+      .join("");  //преобразуем массив строк в одну строчку с помощью метода join('') склеивает массив.
+     listElement.innerHTML = bloksHtml; // в список html кладем полученную строку
 
     };
     renderBloks();
     initEventListeners();
 
-    
-  //добавляем к элементу новый элемент
-    bloks.push({
+    bloks.push({  //добавляем к элементу новый элемент
       name: nameInputElement.value,
       comment:colorInputElement.value,
   
@@ -131,6 +127,7 @@ const renderBloks = () =>{
          const index = deleteButtonElement.dataset.index;
          bloks.splice(index, 1);
          renderBloks();
+        
         });
        }
 
@@ -146,11 +143,10 @@ const renderBloks = () =>{
       };
     const timeNow = today.toLocaleString();
 
-    //добавляем к элементу новый элемент
 
     
 
-      const oldListHtml =listElement.innerHTML;
+      const oldListHtml =listElement.innerHTML;  //добавляем к элементу новый элемент
       listElement.innerHTML = 
         oldListHtml + 
       `<li class="comment">
@@ -170,11 +166,12 @@ const renderBloks = () =>{
             </div>
           </div>
         </li> `;
+        
         initEventListeners();
     });
     
     
-    
+  
   
 
 
