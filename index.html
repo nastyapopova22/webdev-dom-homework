@@ -49,16 +49,16 @@
         name:"Глеб Фокин",
         time:"12.02.22 12:18",
         comment:"Это будет первый комментарий на этой странице",
-        likes:"3",
-        isLike: "false",
+        likes: 3,
+        isLike: false,
       
       },
       {
         name:"Варвара Н.",
         time:"13.02.22 19:22",
         comment:"Мне нравится как оформлена эта страница! ❤",
-        likes:"75",
-        isLike: "false",
+        likes: 75,
+        isLike: false,
       },
     ];
    
@@ -70,18 +70,18 @@ const initEventListeners = () =>{
 
     likeElement.addEventListener("click", () =>{
       const index = likeElement.dataset.index;
-      if (bloks(index).isLike === false){   //если не поставлен
-        bloks(index).isLike = true; //ставим
-        bloks(index).like++; //и +1 к счетчику лайков
+      if (bloks[index].isLike === false){   //если не поставлен
+        bloks[index].isLike = true; //ставим
+        bloks[index].likes++; //и +1 к счетчику лайков
       } else { //в ином случае
-        bloks(index).isLike = false; //убираем
-        bloks(index).like--; //вычитаем лайк
+        bloks[index].isLike = false; //убираем
+        bloks[index].likes--; //вычитаем лайк
       }
+     renderBloks() 
     });
   }
 };
-
-
+initEventListeners()
 // на основе массива сделать html разметку
 
 const renderBloks = () =>{
@@ -99,7 +99,7 @@ const renderBloks = () =>{
           </div>
           <div class="comment-footer">
             <div class="likes">
-              <span class="likes-counter">${blok.likes} </span>
+              <span class="likes-counter" data-index="${index}">${blok.likes} </span>
               <button   class="like-button -active-like"  data-index="${index}"></button>
             </div>
           </div>
@@ -120,6 +120,8 @@ const renderBloks = () =>{
     bloks.push({
       name: nameInputElement.value,
       comment:colorInputElement.value,
+  
+      
     });
 
     const initDeleteButtonsListeners = () =>{
