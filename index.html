@@ -43,6 +43,8 @@
     const today = new Date();
     const likeCount = document.querySelector('.like-counter');
 
+    
+
    
    const bloks = [   // создаем массив 
       {
@@ -61,14 +63,11 @@
         isLike: false,
       },
     ];
-   
-
 
 const initEventListeners = () =>{
   const likesElements = document.querySelectorAll('.like-button');
    for (const likeElement of likesElements) {
-
-    likeElement.addEventListener("click", () =>{
+    likeElement.addEventListener('click', () => {
       const index = likeElement.dataset.index;
       if (bloks[index].isLike === false){   //если не поставлен
         bloks[index].isLike = true; //ставим
@@ -77,12 +76,25 @@ const initEventListeners = () =>{
         bloks[index].isLike = false; //убираем
         bloks[index].likes--; //вычитаем лайк
       }
-     renderBloks() 
-     initEventListeners()
+     renderBloks(); 
+    
     });
   }
 };
-initEventListeners()
+initEventListeners();
+
+const commentEventListeners = () =>{
+const commentsElements = document.querySelectorAll(".comment-body");
+  for (const commentElement of commentsElements) {
+    commentElement.addEventListener('click', (event) => {
+      event.stopPropagation();
+      const thisComment =  commentElement.dataset.comment;
+      const thisName = commentElement.dataset.name;
+      colorInputElement.value += `${thisName} : ${thisComment}`;
+  });
+  }
+};
+
 
 
 const renderBloks = () =>{ // на основе массива сделать html разметку
@@ -90,90 +102,61 @@ const renderBloks = () =>{ // на основе массива сделать ht
   const bloksHtml = bloks.map((blok, index) =>{
     return `<li class="comment">
           <div class="comment-header">
-            <div> ${blok.name} </div>
+            <div>
+               ${blok.name} </div>
             <div>${blok.time}</div>
           </div>
-          <div class="comment-body">
-            <div class="comment-text">
+          <div class="comment-body"  data-comment ="${blok.comment}" data-name ="${blok.name}"  >
+            <div class="comment-text" >
               ${blok.comment} 
             </div>
           </div>
           <div class="comment-footer">
             <div class="likes">
               <span class="likes-counter">${blok.likes} </span>
-              <button   class="like-button ${blok.isLike ? '-active-like' : ''} "  data-index="${index}"></button>
-            </div>
-          </div>
-        </li> `
-      })
-      .join("");  //преобразуем массив строк в одну строчку с помощью метода join('') склеивает массив.
-     listElement.innerHTML = bloksHtml; // в список html кладем полученную строку
-
-    };
-    renderBloks();
-    initEventListeners();
-
-    bloks.push({  //добавляем к элементу новый элемент
-      name: nameInputElement.value,
-      comment:colorInputElement.value,
-  
-      
-    });
-
-    const initDeleteButtonsListeners = () =>{
-      const deleteButtonsElements = document.querySelectorAll(".like-button -active-like");
-       for (const deleteButtonElement of deleteButtonsElements) {
-        deleteButtonElement.addEventListener('click', () =>{
-         const index = deleteButtonElement.dataset.index;
-         bloks.splice(index, 1);
-         renderBloks();
-        
-        });
-       }
-
-    };
-    initDeleteButtonsListeners();
-
-    buttonElement.addEventListener("click", () => {
-      nameInputElement.style.backgroundColor = '';
-
-      if (nameInputElement.value === ' '){
-        nameInputElement.style.backgroundColor = 'red';
-        return;
-      };
-    const timeNow = today.toLocaleString();
-
-
-    
-
-      const oldListHtml =listElement.innerHTML;  //добавляем к элементу новый элемент
-      listElement.innerHTML = 
-        oldListHtml + 
-      `<li class="comment">
-          <div class="comment-header">
-            <div> ${nameInputElement.value} </div>
-            <div>${timeNow}</div>
-          </div>
-          <div class="comment-body">
-            <div class="comment-text">
-              ${colorInputElement.value} 
-            </div>
-          </div>
-          <div class="comment-footer">
-            <div class="likes">
-              <span class="likes-counter">0</span>
-              <button class="like-button -active-like"></button>
+              <button   class="like-button ${blok.isLike ? '-active-like' : ''}"  data-index="${index}"></button>
             </div>
           </div>
         </li> `;
-        
-        initEventListeners();
+      })
+      .join("");  //преобразуем массив строк в одну строчку с помощью метода join('') склеивает массив.
+     listElement.innerHTML = bloksHtml; // в список html кладем полученную строку
+     initEventListeners();
+     commentEventListeners();
+    };
+    renderBloks();
+   
+
+
+    const timeNow = today.toLocaleString();
+ 
+    buttonElement.addEventListener("click", () => {
+      nameInputElement.classList.remove("error");
+      if (nameInputElement.value === "") {
+        nameInputElement.classList.add("error");
+        return;
+      }
+      bloks.push ({
+      name: nameInputElement.value
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;"),
+      comment:colorInputElement.value
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;"),
+      time: timeNow,
+      likes: 0,
+      isLike: false,
+      });
+
+      renderBloks();
+      nameInputElement.value = "";
+      colorInputElement.value = "";
     });
     
-    
-  
-  
-
 
   </script>
 </html>
