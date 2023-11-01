@@ -43,21 +43,23 @@
     const today = new Date();
     const likeCount = document.querySelector('.like-counter');
 
-const getComments = ()=>{
 
+let bloks = [ ];
 
-const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/asya-popova/comments",{
-  method:"GET",
+listElement.textContent = 'Пожалуйста подождите, загружаю комметнарий... ';
 
-});
+const getComments = () =>{
+  return fetch("https://wedev-api.sky.pro/api/v1/asya-popova/comments",{
+   method:"GET",
 
-  fetchPromise.then((response) => {
+})
+    .then((response) => {
+     return response.json();
 
-    const jsonPromise = response.json();
-
-    jsonPromise.then((responseData) => {
+})
+    .then((responseData) => {
     let appComments = responseData.comments.map((blok) => {
-      return{
+      return {
         name: blok.author.name,
         comment: blok.text,
         time:new Date(blok.date).toLocaleString(),
@@ -68,28 +70,9 @@ const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/asya-popova/comment
     bloks = appComments;
     console.log(responseData);
     renderBloks();
-  });
- }); 
+  }); 
 }
-getComments();
-
-let bloks = [   // создаем массив 
-      {
-        name:"Глеб Фокин",
-        time:"12.02.22 12:18",
-        comment:"Это будет первый комментарий на этой странице",
-        likes: 3,
-        isLike: false,
-      
-      },
-      {
-        name:"Варвара Н.",
-        time:"13.02.22 19:22",
-        comment:"Мне нравится как оформлена эта страница! ❤",
-        likes: 75,
-        isLike: false,
-      },
-    ];
+getComments ();
 
 const initEventListeners = () =>{
   const likesElements = document.querySelectorAll('.like-button');
@@ -159,43 +142,45 @@ const renderBloks = () =>{ // на основе массива сделать ht
       if (nameInputElement.value === "") {
         nameInputElement.classList.add("error");
         return;
-      }
 
-const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/asya-popova/comments",{
+        
+      };
+
+listElement.textContent = 'Загружаю комментарий... ';
+
+fetch("https://wedev-api.sky.pro/api/v1/asya-popova/comments",{
   method:"POST",
- body: JSON.stringify({
+  body: JSON.stringify({
   text: textInputElement.value,
   name: nameInputElement.value,
  }),
 
-});
-
-fetchPromise.then(() => {
+}).then(() => {
 return getComments();
 
 });
- //renderBloks();
 
 
-      bloks.push ({
-      name: nameInputElement.value
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;"),
-      comment:textInputElement.value
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;"),
-      time: timeNow,
-      likes: 0,
-      isLike: false,
-      });
 
-      renderBloks();
-      nameInputElement.value = "";
-      textInputElement.value = "";
+bloks.push ({
+  name: nameInputElement.value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;"),
+  comment:textInputElement.value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;"),
+  time: timeNow,
+  likes: 0,
+  isLike: false,
+  });
+
+  renderBloks();
+    nameInputElement.value = "";
+    textInputElement.value = "";
     });
     
 
