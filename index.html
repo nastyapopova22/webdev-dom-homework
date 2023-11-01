@@ -43,19 +43,21 @@
     const today = new Date();
     const likeCount = document.querySelector('.like-counter');
 
-const getComments = ()=>{
+
+let bloks = [ ];
+
+listElement.textContent = 'Пожалуйста подождите, загружаю комметнарий... ';
+
+ const getComments = ()=>{
 
 
-const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/asya-popova/comments",{
+return fetch("https://wedev-api.sky.pro/api/v1/asya-popova/comments",{
   method:"GET",
 
-});
+}).then((response) => {
+      return response.json();
 
-  fetchPromise.then((response) => {
-
-    const jsonPromise = response.json();
-
-    jsonPromise.then((responseData) => {
+}).then((responseData) => {
     let appComments = responseData.comments.map((blok) => {
       return{
         name: blok.author.name,
@@ -68,28 +70,10 @@ const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/asya-popova/comment
     bloks = appComments;
     console.log(responseData);
     renderBloks();
-  });
- }); 
+  }); 
 }
 getComments();
 
-let bloks = [   // создаем массив 
-      {
-        name:"Глеб Фокин",
-        time:"12.02.22 12:18",
-        comment:"Это будет первый комментарий на этой странице",
-        likes: 3,
-        isLike: false,
-      
-      },
-      {
-        name:"Варвара Н.",
-        time:"13.02.22 19:22",
-        comment:"Мне нравится как оформлена эта страница! ❤",
-        likes: 75,
-        isLike: false,
-      },
-    ];
 
 const initEventListeners = () =>{
   const likesElements = document.querySelectorAll('.like-button');
@@ -159,7 +143,11 @@ const renderBloks = () =>{ // на основе массива сделать ht
       if (nameInputElement.value === "") {
         nameInputElement.classList.add("error");
         return;
+
+        
       }
+
+listElement.textContent = 'Загружаю комментарий... ';
 
 const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/asya-popova/comments",{
   method:"POST",
@@ -174,28 +162,26 @@ fetchPromise.then(() => {
 return getComments();
 
 });
- //renderBloks();
 
+bloks.push ({
+  name: nameInputElement.value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;"),
+  comment:textInputElement.value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;"),
+  time: timeNow,
+  likes: 0,
+  isLike: false,
+  });
 
-      bloks.push ({
-      name: nameInputElement.value
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;"),
-      comment:textInputElement.value
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;"),
-      time: timeNow,
-      likes: 0,
-      isLike: false,
-      });
-
-      renderBloks();
-      nameInputElement.value = "";
-      textInputElement.value = "";
+  renderBloks();
+    nameInputElement.value = "";
+    textInputElement.value = "";
     });
     
 
