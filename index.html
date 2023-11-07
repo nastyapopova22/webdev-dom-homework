@@ -72,7 +72,7 @@ const getComments = () =>{
     renderBloks();
   }); 
 }
-//getComments ();
+getComments ();
 
 const initEventListeners = () =>{
   const likesElements = document.querySelectorAll('.like-button');
@@ -132,11 +132,10 @@ const renderBloks = () =>{ // на основе массива сделать ht
       .join("");  //преобразуем массив строк в одну строчку с помощью метода join('') склеивает массив.
      listElement.innerHTML = bloksHtml; // в список html кладем полученную строку
      initEventListeners();
-     commentEventListeners();
-     
+     commentEventListeners();     
     };
     getComments ();
-    renderBloks();
+   
    
 
     const timeNow = today.toLocaleString();
@@ -152,7 +151,7 @@ const renderBloks = () =>{ // на основе массива сделать ht
 
 listElement.textContent = 'Загружаю комментарий... ';
 
- return fetch ("https://wedev-api.sky.pro/api/v1/asya-popova/comments",{
+ fetch ("https://wedev-api.sky.pro/api/v1/asya-popova/comments",{
   method:"POST",
   body: JSON.stringify({
   text: textInputElement.value,
@@ -163,8 +162,6 @@ listElement.textContent = 'Загружаю комментарий... ';
 return getComments();
 
 });
-
-renderBloks();
 
 bloks.push ({
   name: nameInputElement.value
