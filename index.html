@@ -42,13 +42,29 @@
     const textInputElement = document.getElementById("color-input");
     const today = new Date();
     const likeCount = document.querySelector('.like-counter');
+    
 
+let bloks = [
+     // {
+    //   name: 'Глеб Фокин',
+    //   date: "12.02.22 12:18",
+    //   comment: 'Это будет первый комментарий на этой странице',
+    //   likes: 3,
+    //   islike: false
+    // },
+    // {
+    //   name: 'Варвара Н',
+    //   date: "13.02.22 19:22",
+    //   comment: 'Мне нравится как оформлена эта страница! ❤',
+    //   likes: 75,
+    //   islike: true
+    // }
+ ];
 
-let bloks = [ ];
+listElement.textContent = 'Пожалуйста подождите, загружаю комментарий... ';
 
-listElement.textContent = 'Пожалуйста подождите, загружаю комметнарий... ';
+const getComments = () => {
 
-const getComments = () =>{
   return fetch("https://wedev-api.sky.pro/api/v1/asya-popova/comments",{
    method:"GET",
 
@@ -93,7 +109,6 @@ const initEventListeners = () =>{
 };
 initEventListeners();
 
-//ничего не получается
 
 const commentEventListeners = () =>{
 const commentsElements = document.querySelectorAll(".comment-body");
@@ -149,41 +164,56 @@ const renderBloks = () =>{ // на основе массива сделать ht
         
       };
 
-listElement.textContent = 'Загружаю комментарий... ';
+buttonElement.addEventListener("click", () => {
+  const formHtml = document.querySelectorAll('.add-form')
+  formHtml.style.display = 'none'
+  nameInputElement.classList.remove("error");
+  if (nameInputElement.value === "") {
+    nameInputElement.classList.add("error");
+    return;
+  }
+formHtml.textContent = 'Загружаю комментарий... ';
 
- fetch ("https://wedev-api.sky.pro/api/v1/asya-popova/comments",{
+const fetchPromise = fetch ("https://wedev-api.sky.pro/api/v1/asya-popova/comments",{
   method:"POST",
   body: JSON.stringify({
-  text: textInputElement.value,
-  name: nameInputElement.value,
+   text: textInputElement.value,
+   name: nameInputElement.value,
  }),
 
-}).then(() => {
-return getComments();
+});
+fetchPromise.then (() =>{
+  return getComments();
+}).then (() =>{
+  formHtml.style.display = 'flex'
+   //return getComments();
+}).then(()=> {
+  formHtml.innerHTML = innerFormHtml
 
 });
 
-bloks.push ({
-  name: nameInputElement.value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;"),
-  comment:textInputElement.value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;"),
-  time: timeNow,
-  likes: 0,
-  isLike: false,
-  });
 
+//bloks.push ({ метод push убираем в 2.12 задании
+ // name: nameInputElement.value
+ //   .replaceAll("&", "&amp;")
+ //   .replaceAll("<", "&lt;")
+ //   .replaceAll(">", "&gt;")
+ //   .replaceAll('"', "&quot;"),
+ // comment:textInputElement.value
+//    .replaceAll("&", "&amp;")
+//    .replaceAll("<", "&lt;")
+//    .replaceAll(">", "&gt;")
+//    .replaceAll('"', "&quot;"),
+//  time: timeNow,
+//  likes: 0,
+//  isLike: false,
+//  });
+});
   renderBloks();
     nameInputElement.value = "";
     textInputElement.value = "";
     });
-    //
+  
 
   </script>
 </html>
