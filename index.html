@@ -151,66 +151,47 @@ const renderBloks = () =>{ // на основе массива сделать ht
     };
     getComments ();
    
-   
-
-    const timeNow = today.toLocaleString();
+   const timeNow = today.toLocaleString();
  
-    buttonElement.addEventListener("click", () => {
-      nameInputElement.classList.remove("error");
-      if (nameInputElement.value === "") {
-        nameInputElement.classList.add("error");
-        return;
-
-        
-      };
-
-buttonElement.addEventListener("click", () => {
+buttonElement.addEventListener("click", () => {  // создаем клик для обработки пост запроса
   const formHtml = document.querySelector('.add-form')
-  const innerFormHtml = formHtml.innerHTML
+  //const innerFormHtml = formHtml.innerHTML
   formHtml.style.display = 'none'
   nameInputElement.classList.remove("error");
   if (nameInputElement.value === "") {
     nameInputElement.classList.add("error");
     return;
   }
+
 formHtml.textContent = 'Загружаю комментарий... ';
 
-fetch ("https://wedev-api.sky.pro/api/v1/asya-popova/comments",{
+  const fetchPromise = fetch ("https://wedev-api.sky.pro/api/v1/asya-popova/comments",{
   method:"POST",
   body: JSON.stringify({
-   text: textInputElement.value,
-   name: nameInputElement.value,
+    name: nameInputElement.value
+    .replaceAll("&", "&amp;")
+   .replaceAll("<", "&lt;")
+   .replaceAll(">", "&gt;")
+   .replaceAll('"', "&quot;"),
+ comment:textInputElement.value
+  .replaceAll("&", "&amp;")
+  .replaceAll("<", "&lt;")
+  .replaceAll(">", "&gt;")
+ .replaceAll('"', "&quot;"),
  }),
 
-}).then (() =>{
+});
+fetchPromise.then (() => {
   return getComments();
-}).then(()=> {
-  formHtml.innerHTML = innerFormHtml
-}).then (() =>{
-  formHtml.style.display = 'flex'
+}).then (() => {
+ formHtml.style.display = "flex";
 });
 
-//bloks.push ({ метод push убираем в 2.12 задании
- // name: nameInputElement.value
- //   .replaceAll("&", "&amp;")
- //   .replaceAll("<", "&lt;")
- //   .replaceAll(">", "&gt;")
- //   .replaceAll('"', "&quot;"),
- // comment:textInputElement.value
-//    .replaceAll("&", "&amp;")
-//    .replaceAll("<", "&lt;")
-//    .replaceAll(">", "&gt;")
-//    .replaceAll('"', "&quot;"),
-//  time: timeNow,
-//  likes: 0,
-//  isLike: false,
-//  });
-});
   renderBloks();
     nameInputElement.value = "";
     textInputElement.value = "";
     });
   
-//
+    
   </script>
 </html>
