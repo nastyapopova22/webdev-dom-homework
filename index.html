@@ -165,7 +165,8 @@ const renderBloks = () =>{ // на основе массива сделать ht
       };
 
 buttonElement.addEventListener("click", () => {
-  const formHtml = document.querySelectorAll('.add-form')
+  const formHtml = document.querySelector('.add-form')
+  const innerFormHtml = formHtml.innerHTML
   formHtml.style.display = 'none'
   nameInputElement.classList.remove("error");
   if (nameInputElement.value === "") {
@@ -174,22 +175,19 @@ buttonElement.addEventListener("click", () => {
   }
 formHtml.textContent = 'Загружаю комментарий... ';
 
-const fetchPromise = fetch ("https://wedev-api.sky.pro/api/v1/asya-popova/comments",{
+fetch ("https://wedev-api.sky.pro/api/v1/asya-popova/comments",{
   method:"POST",
   body: JSON.stringify({
    text: textInputElement.value,
    name: nameInputElement.value,
  }),
 
-});
-fetchPromise.then (() =>{
-  return getComments();
 }).then (() =>{
-  formHtml.style.display = 'flex'
-   //return getComments();
+  return getComments();
 }).then(()=> {
   formHtml.innerHTML = innerFormHtml
-
+}).then (() =>{
+  formHtml.style.display = 'flex'
 });
 
 //bloks.push ({ метод push убираем в 2.12 задании
