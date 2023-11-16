@@ -151,9 +151,7 @@ const renderBloks = () =>{ // на основе массива сделать ht
     };
     getComments ();
    
-   
-
-    const timeNow = today.toLocaleString();
+   const timeNow = today.toLocaleString();
  
 buttonElement.addEventListener("click", () => {  // создаем клик для обработки пост запроса
   const formHtml = document.querySelector('.add-form')
@@ -188,7 +186,6 @@ fetchPromise.then (() => {
 }).then (() => {
  formHtml.style.display = "flex";
 });
-
 
   renderBloks();
     nameInputElement.value = "";
