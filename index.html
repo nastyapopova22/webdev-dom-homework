@@ -8,10 +8,12 @@
 
   <body>
     <div class="container">
-      <ul id="List" class="comments">
+      <div id="loader-comment">Комментарии загружаются...</div>
+      <ul id="List" class="comments"> 
 <!--список рендерится из js-->
       </ul>
-      <div class="add-form">
+      <div id="add-loader-comment">Загружаю комментарий, пожалуйста подождите...</div>
+      <div class="add-form" id="add-form">
         <input id="name-input"
           type="text"
           class="add-form-name"
@@ -42,7 +44,10 @@
     const textInputElement = document.getElementById("color-input");
     const today = new Date();
     const likeCount = document.querySelector('.like-counter');
-    
+    const addLoaderComment = document.getElementById("add-loader-comment");
+    const loaderComment = document.getElementById("loader-comment");
+  
+addLoaderComment.style.display = 'none';
 
 let bloks = [
      // {
@@ -61,7 +66,7 @@ let bloks = [
     // }
  ];
 
-listElement.textContent = 'Пожалуйста подождите, загружаю комментарий... ';
+
 
 const getComments = () => {
 
@@ -84,7 +89,7 @@ const getComments = () => {
       }
     })
     bloks = appComments;
-    console.log(responseData);
+    loaderComment.style.display = 'none';
     renderBloks();
   }); 
 }
@@ -154,17 +159,15 @@ const renderBloks = () =>{ // на основе массива сделать ht
    const timeNow = today.toLocaleString();
  
 buttonElement.addEventListener("click", () => {  // создаем клик для обработки пост запроса
-  const formHtml = document.querySelector('.add-form')
-  //const innerFormHtml = formHtml.innerHTML
-  formHtml.style.display = 'none'
+ const formHtml = document.querySelector('.add-form').style.display = 'none';
+  addLoaderComment.style.display = "block";
   nameInputElement.classList.remove("error");
   if (nameInputElement.value === "") {
     nameInputElement.classList.add("error");
     return;
   }
 
-formHtml.textContent = 'Загружаю комментарий... ';
-
+function postTask() {
   const fetchPromise = fetch ("https://wedev-api.sky.pro/api/v1/asya-popova/comments",{
   method:"POST",
   body: JSON.stringify({
@@ -178,20 +181,41 @@ formHtml.textContent = 'Загружаю комментарий... ';
    .replaceAll("<", "&lt;")
    .replaceAll(">", "&gt;")
    .replaceAll('"', "&quot;"),
+   //time:new Date(blok.date).toLocaleString(),
  }),
 
 });
 fetchPromise.then (() => {
   return getComments();
-}).then (() => {
- formHtml.style.display = "flex";
+})
+.then (() => {
+document.getElementById("add-form").style.display = 'flex';
+addLoaderComment.style.display = 'none';
+nameInputElement.value = ""
+textInputElement.value = ""
 });
-
+};
+//.catch((error) => {
+//  document.getElementById("add-form").style.display = 'flex';
+//  addLoaderComment.style.display = 'none';
+//     if (error.message === "Сервер сломался") {
+//        alert('Сервер сломался, попробуйте позже');
+//       }
+ //    if (error.message === "Плохой запрос") {
+//         alert('Имя и комментарий должны быть не короче 3х символов');
+//       }
+//     else {
+//         alert("Кажется у вас сломался интернет, попробуйте позже")
+//        }
+//          // TODO: Отправлять в систему сбора ошибок
+//         console.log(error);
+//        });
+  postTask();
   renderBloks();
     nameInputElement.value = "";
     textInputElement.value = "";
     });
-  
+   getComments();
     
   </script>
 </html>
