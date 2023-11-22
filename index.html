@@ -20,7 +20,6 @@
           value=" "
           placeholder="Введите ваше имя"
           
-  
       ></input>
         <textarea 
         id="color-input"
@@ -49,23 +48,7 @@
   
 addLoaderComment.style.display = 'none';
 
-let bloks = [
-     // {
-    //   name: 'Глеб Фокин',
-    //   date: "12.02.22 12:18",
-    //   comment: 'Это будет первый комментарий на этой странице',
-    //   likes: 3,
-    //   islike: false
-    // },
-    // {
-    //   name: 'Варвара Н',
-    //   date: "13.02.22 19:22",
-    //   comment: 'Мне нравится как оформлена эта страница! ❤',
-    //   likes: 75,
-    //   islike: true
-    // }
- ];
-
+let bloks = [ ];
 
 
 const getComments = () => {
@@ -79,6 +62,7 @@ const getComments = () => {
 
 })
     .then((responseData) => {
+    // console.log("данные, которые вернул сервер", responseData.comments);
     let appComments = responseData.comments.map((blok) => {
       return {
         name: blok.author.name,
@@ -89,6 +73,7 @@ const getComments = () => {
       }
     })
     bloks = appComments;
+    //console.log("преобразованные данные", appComments);
     loaderComment.style.display = 'none';
     renderBloks();
   }); 
@@ -130,6 +115,7 @@ const commentsElements = document.querySelectorAll(".comment-body");
 const renderBloks = () =>{ // на основе массива сделать html разметку
 
   const bloksHtml = bloks.map((blok, index) =>{
+  //  console.log (blok);
     return `<li class="comment">
           <div class="comment-header">
             <div>
@@ -167,8 +153,8 @@ buttonElement.addEventListener("click", () => {  // создаем клик дл
     return;
   }
 
-function postTask() {
-  const fetchPromise = fetch ("https://wedev-api.sky.pro/api/v1/asya-popova/comments",{
+function postComment() {
+  return fetch ("https://wedev-api.sky.pro/api/v1/asya-popova/comments",{
   method:"POST",
   body: JSON.stringify({
     name: nameInputElement.value
@@ -181,36 +167,44 @@ function postTask() {
    .replaceAll("<", "&lt;")
    .replaceAll(">", "&gt;")
    .replaceAll('"', "&quot;"),
-   //time:new Date(blok.date).toLocaleString(),
  }),
 
-});
-fetchPromise.then (() => {
+})
+ .then ((response) => {
+    if (response.status === 201){
+     return response.json ();
+    }
+    if (response.status === 500 ){
+     throw new Error ("Сервер упал");
+    }
+    if (response.status === 400){
+     throw new Error ("Неверные данные ввода")
+    }
+})
+ .then(() => {
   return getComments();
 })
 .then (() => {
 document.getElementById("add-form").style.display = 'flex';
-addLoaderComment.style.display = 'none';
-nameInputElement.value = ""
-textInputElement.value = ""
-});
+  addLoaderComment.style.display = 'none';
+  nameInputElement.value = "";
+  textInputElement.value = "";
+}).catch((error) => {
+ document.getElementById("add-form").style.display = 'flex';
+  addLoaderComment.style.display = 'none';
+    if (error.message === "Сервер сломался") {
+        alert('Сервер сломался, попробуйте позже');
+       }
+     if (error.message === "Плохой запрос") {
+         alert('Имя и комментарий должны быть не короче 3х символов');
+       }
+     else {
+        alert("Кажется у вас сломался интернет, попробуйте позже")
+       }    
+ console.log(error);
+    });
 };
-//.catch((error) => {
-//  document.getElementById("add-form").style.display = 'flex';
-//  addLoaderComment.style.display = 'none';
-//     if (error.message === "Сервер сломался") {
-//        alert('Сервер сломался, попробуйте позже');
-//       }
- //    if (error.message === "Плохой запрос") {
-//         alert('Имя и комментарий должны быть не короче 3х символов');
-//       }
-//     else {
-//         alert("Кажется у вас сломался интернет, попробуйте позже")
-//        }
-//          // TODO: Отправлять в систему сбора ошибок
-//         console.log(error);
-//        });
-  postTask();
+  postComment();
   renderBloks();
     nameInputElement.value = "";
     textInputElement.value = "";
