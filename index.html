@@ -17,15 +17,12 @@
         <input id="name-input"
           type="text"
           class="add-form-name"
-          value=" "
           placeholder="Введите ваше имя"
           
       ></input>
         <textarea 
         id="color-input"
-          type="textarea"
           class="add-form-text"
-          value=" "
           placeholder="Введите ваш коментарий"
           rows="4"
         ></textarea>
@@ -35,181 +32,184 @@
       </div>
     </div>
   </body>
-
-  <script>
-    const buttonElement = document.getElementById("add-button");
-    const listElement = document.getElementById("List");
-    const nameInputElement = document.getElementById("name-input");
-    const textInputElement = document.getElementById("color-input");
-    const today = new Date();
-    const likeCount = document.querySelector('.like-counter');
-    const addLoaderComment = document.getElementById("add-loader-comment");
-    const loaderComment = document.getElementById("loader-comment");
-  
-addLoaderComment.style.display = 'none';
-
-let bloks = [ ];
-
-
-const getComments = () => {
-
-  return fetch("https://wedev-api.sky.pro/api/v1/asya-popova/comments",{
-   method:"GET",
-
-})
-    .then((response) => {
-     return response.json();
-
-})
-    .then((responseData) => {
-    // console.log("данные, которые вернул сервер", responseData.comments);
-    let appComments = responseData.comments.map((blok) => {
-      return {
-        name: blok.author.name,
-        comment: blok.text,
-        time:new Date(blok.date).toLocaleString(),
-        likes: blok.likes,
-        isLike: false,
-      }
-    })
-    bloks = appComments;
-    //console.log("преобразованные данные", appComments);
-    loaderComment.style.display = 'none';
-    renderBloks();
-  }); 
-}
-getComments ();
-
-const initEventListeners = () =>{
-  const likesElements = document.querySelectorAll('.like-button');
-   for (const likeElement of likesElements) {
-    likeElement.addEventListener('click', () => {
-      const index = likeElement.dataset.index;
-      if (bloks[index].isLike === false){   //если не поставлен
-        bloks[index].isLike = true; //ставим
-        bloks[index].likes++; //и +1 к счетчику лайков
-      } else { //в ином случае
-        bloks[index].isLike = false; //убираем
-        bloks[index].likes--; //вычитаем лайк
-      }
-     renderBloks(); 
-    
-    });
-  }
-};
-initEventListeners();
-
-
-const commentEventListeners = () =>{
-const commentsElements = document.querySelectorAll(".comment-body");
-  for (const commentElement of commentsElements) {
-    commentElement.addEventListener('click', (event) => {
-      event.stopPropagation();
-      const thisComment =  commentElement.dataset.comment;
-      const thisName = commentElement.dataset.name;
-      textInputElement.value += `${thisName} : ${thisComment}`;
-  });
-  }
-};
-
-const renderBloks = () =>{ // на основе массива сделать html разметку
-
-  const bloksHtml = bloks.map((blok, index) =>{
-  //  console.log (blok);
-    return `<li class="comment">
-          <div class="comment-header">
-            <div>
-               ${blok.name} </div>
-            <div>${blok.time}</div>
-          </div>
-          <div class="comment-body"  data-comment ="${blok.comment}" data-name ="${blok.name}"  >
-            <div class="comment-text" >
-              ${blok.comment} 
-            </div>
-          </div>
-          <div class="comment-footer">
-            <div class="likes">
-              <span class="likes-counter">${blok.likes} </span>
-              <button   class="like-button ${blok.isLike ? '-active-like' : ''}"  data-index="${index}"></button>
-            </div>
-          </div>
-        </li> `;
-      })
-      .join("");  //преобразуем массив строк в одну строчку с помощью метода join('') склеивает массив.
-     listElement.innerHTML = bloksHtml; // в список html кладем полученную строку
-     initEventListeners();
-     commentEventListeners();     
-    };
-    getComments ();
-   
-   const timeNow = today.toLocaleString();
+ <script>
+const buttonElement = document.getElementById("add-button");
+ const listElement = document.getElementById("List");
+ const nameInputElement = document.getElementById("name-input");
+ const textInputElement = document.getElementById("color-input");
+ const today = new Date();
+ const likeCount = document.querySelector('.like-counter');
+ const addLoaderComment = document.getElementById("add-loader-comment");
+ const loaderComment = document.getElementById("loader-comment");
  
-buttonElement.addEventListener("click", () => {  // создаем клик для обработки пост запроса
- const formHtml = document.querySelector('.add-form').style.display = 'none';
-  addLoaderComment.style.display = "block";
-  nameInputElement.classList.remove("error");
-  if (nameInputElement.value === "") {
-    nameInputElement.classList.add("error");
-    return;
-  }
+ addLoaderComment.style.display = 'none';
+ 
+ let bloks = [ ];
+ 
+ const getComments = () => {
+ 
+ return fetch("https://wedev-api.sky.pro/api/v1/asya-popova/comments",{
+ method:"GET",
+ 
+ })
+ .then((response) => {
+  return response.json();
+ 
+ })
+ .then((responseData) => {
+ // console.log("данные, которые вернул сервер", responseData.comments);
+ let appComments = responseData.comments.map((blok) => {
+   return {
+     name: blok.author.name,
+     comment: blok.text,
+     time:new Date(blok.date).toLocaleString(),
+     likes: blok.likes,
+     isLike: false,
+   }
+ })
+ bloks = appComments;
+ //console.log("преобразованные данные", appComments);
+ loaderComment.style.display = 'none';
+ renderBloks();
+ }); 
+ }
+ getComments ();
+ 
+ const initEventListeners = () =>{
+ const likesElements = document.querySelectorAll('.like-button');
+ for (const likeElement of likesElements) {
+ likeElement.addEventListener('click', () => {
+   const index = likeElement.dataset.index;
+   if (bloks[index].isLike === false){   //если не поставлен
+     bloks[index].isLike = true; //ставим
+     bloks[index].likes++; //и +1 к счетчику лайков
+   } else { //в ином случае
+     bloks[index].isLike = false; //убираем
+     bloks[index].likes--; //вычитаем лайк
+   }
+  renderBloks(); 
+ 
+ });
+ }
+ };
+ initEventListeners();
+ 
+ 
+ const commentEventListeners = () =>{
+ const commentsElements = document.querySelectorAll(".comment-body");
+ for (const commentElement of commentsElements) {
+ commentElement.addEventListener('click', (event) => {
+   event.stopPropagation();
+   const thisComment =  commentElement.dataset.comment;
+   const thisName = commentElement.dataset.name;
+   textInputElement.value += `${thisName} : ${thisComment}`;
+ });
+ }
+ };
+ 
+ const renderBloks = () =>{ // на основе массива сделать html разметку
+ 
+ const bloksHtml = bloks.map((blok, index) =>{
+ //  console.log (blok);
+ return `<li class="comment">
+       <div class="comment-header">
+         <div>
+            ${blok.name} </div>
+         <div>${blok.time}</div>
+       </div>
+       <div class="comment-body"  data-comment ="${blok.comment}" data-name ="${blok.name}"  >
+         <div class="comment-text" >
+           ${blok.comment} 
+         </div>
+       </div>
+       <div class="comment-footer">
+         <div class="likes">
+           <span class="likes-counter">${blok.likes} </span>
+           <button   class="like-button ${blok.isLike ? '-active-like' : ''}"  data-index="${index}"></button>
+         </div>
+       </div>
+     </li> `;
+   })
+   .join("");  //преобразуем массив строк в одну строчку с помощью метода join('') склеивает массив.
+  listElement.innerHTML = bloksHtml; // в список html кладем полученную строку
+  initEventListeners();
+  commentEventListeners();     
+ };
+ getComments ();
+ 
+ const timeNow = today.toLocaleString();
 
-function postComment() {
-  return fetch ("https://wedev-api.sky.pro/api/v1/asya-popova/comments",{
-  method:"POST",
-  body: JSON.stringify({
-    name: nameInputElement.value
-    .replaceAll("&", "&amp;")
-   .replaceAll("<", "&lt;")
-   .replaceAll(">", "&gt;")
-   .replaceAll('"', "&quot;"),
-   text:textInputElement.value
-   .replaceAll("&", "&amp;")
-   .replaceAll("<", "&lt;")
-   .replaceAll(">", "&gt;")
-   .replaceAll('"', "&quot;"),
+ function postComment() {
+ return fetch ("https://wedev-api.sky.pro/api/v1/asya-popova/comments",{
+ method:"POST",
+ body: JSON.stringify({
+ name: nameInputElement.value
+ .replaceAll("&", "&amp;")
+ .replaceAll("<", "&lt;")
+ .replaceAll(">", "&gt;")
+ .replaceAll('"', "&quot;"),
+ text:textInputElement.value
+ .replaceAll("&", "&amp;")
+ .replaceAll("<", "&lt;")
+ .replaceAll(">", "&gt;")
+ .replaceAll('"', "&quot;"),
  }),
-
-})
+ 
+ })
  .then ((response) => {
-    if (response.status === 201){
-     return response.json ();
-    }
-    if (response.status === 500 ){
-     throw new Error ("Сервер упал");
-    }
-    if (response.status === 400){
-     throw new Error ("Неверные данные ввода")
-    }
-})
+ if (response.status === 201){
+  return response.json ();
+ }
+ if (response.status === 500 ){
+  throw new Error ("Сервер упал");
+ }
+ if (response.status === 400){
+  throw new Error ("Неверные данные ввода")
+ }
+ })
  .then(() => {
-  return getComments();
-})
-.then (() => {
-document.getElementById("add-form").style.display = 'flex';
-  addLoaderComment.style.display = 'none';
-  nameInputElement.value = "";
-  textInputElement.value = "";
-}).catch((error) => {
+ return getComments();
+ })
+ .then (() => {
  document.getElementById("add-form").style.display = 'flex';
-  addLoaderComment.style.display = 'none';
-    if (error.message === "Сервер сломался") {
-        alert('Сервер сломался, попробуйте позже');
-       }
-     if (error.message === "Плохой запрос") {
-         alert('Имя и комментарий должны быть не короче 3х символов');
-       }
-     else {
-        alert("Кажется у вас сломался интернет, попробуйте позже")
-       }    
+ addLoaderComment.style.display = 'none';
+ nameInputElement.value = "";
+ textInputElement.value = "";
+ }).catch((error) => {
+ document.getElementById("add-form").style.display = 'flex';
+ addLoaderComment.style.display = 'none';
+ if (error.message === "Сервер сломался") {
+     alert('Сервер сломался, попробуйте позже');
+    }
+  if (error.message === "Плохой запрос") {
+      alert('Имя и комментарий должны быть не короче 3х символов');
+    }
+  else {
+     alert("Кажется у вас сломался интернет, попробуйте позже")
+    }    
  console.log(error);
-    });
-};
-  postComment();
-  renderBloks();
-    nameInputElement.value = "";
-    textInputElement.value = "";
-    });
-   getComments();
-    
-  </script>
+ });
+ };
+
+ buttonElement.addEventListener("click", () => {  // создаем клик для обработки пост запроса
+ 
+  nameInputElement.classList.remove("error"); // пустое поле 
+ if (nameInputElement.value === "" || textInputElement.value === "") {  
+   console.log ("error")
+   nameInputElement.classList.add("error");
+ return;
+ }
+
+ document.querySelector('.add-form').style.display = 'none';
+ addLoaderComment.style.display = "block";
+
+
+ postComment();
+ renderBloks();
+ nameInputElement.value = "";
+ textInputElement.value = "";
+ });
+ getComments();
+
+ </script>
 </html>
