@@ -13,24 +13,24 @@ import { renderForm} from "./render.js";
  
  addLoaderComment.style.display = 'none';
  
- let bloks = [ ];
+ let blocks  = [ ];
  
  const getComments = () => {  // гет запрос
   getApi ().then((responseData) => {
  // console.log("данные, которые вернул сервер", responseData.comments);
- let appComments = responseData.comments.map((blok) => {
+ let appComments = responseData.comments.map((block) => {
    return {
-     name: blok.author.name,
-     comment: blok.text,
-     time:new Date(blok.date).toLocaleString(),
-     likes: blok.likes,
+     name: block.author.name,
+     comment: block.text,
+     time:new Date(block.date).toLocaleString(),
+     likes: block.likes,
      isLike: false,
    }
  })
- bloks = appComments;
+ blocks  = appComments;
  //console.log("преобразованные данные", appComments);
  loaderComment.style.display = 'none';
- renderBloks();
+ renderblocks ();
  }); 
  }
  getComments ();
@@ -40,14 +40,14 @@ import { renderForm} from "./render.js";
  for (const likeElement of likesElements) {
  likeElement.addEventListener('click', () => {
    const index = likeElement.dataset.index;
-   if (bloks[index].isLike === false){   //если не поставлен
-     bloks[index].isLike = true; //ставим
-     bloks[index].likes++; //и +1 к счетчику лайков
+   if (blocks [index].isLike === false){   //если не поставлен
+     blocks [index].isLike = true; //ставим
+     blocks [index].likes++; //и +1 к счетчику лайков
    } else { //в ином случае
-     bloks[index].isLike = false; //убираем
-     bloks[index].likes--; //вычитаем лайк
+     blocks [index].isLike = false; //убираем
+     blocks [index].likes--; //вычитаем лайк
    }
-  renderBloks(); 
+  renderblocks (); 
  
  });
  }
@@ -67,8 +67,8 @@ import { renderForm} from "./render.js";
  }
  };
  
- const renderBloks = () =>{ 
-  renderForm ({bloksHtml,listElement});
+ const renderblocks  = () =>{ 
+  renderForm ({blocks ,listElement});
 
   initEventListeners();
   commentEventListeners();    
@@ -129,7 +129,7 @@ import { renderForm} from "./render.js";
 
 
  postComment();
- renderBloks();
+ renderblocks ();
  nameInputElement.value = "";
  textInputElement.value = "";
  });
