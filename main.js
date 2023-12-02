@@ -1,5 +1,5 @@
-import { getApi} from "./api.js";
-import { postApi} from "./api.js";
+import { getApi,postApi} from "./api.js";
+import { renderLogin } from "./loginPage.js";
 import { renderForm} from "./render.js";
 
  const buttonElement = document.getElementById("add-button");
@@ -31,6 +31,7 @@ import { renderForm} from "./render.js";
  //console.log("преобразованные данные", appComments);
  loaderComment.style.display = 'none';
  renderblocks ();
+
  }); 
  }
  getComments ();

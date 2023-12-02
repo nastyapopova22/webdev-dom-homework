@@ -1,20 +1,37 @@
+
+const apiUrl = "https://wedev-api.sky.pro/api/v2/asya-popova/comments";
+const userUrl = "https://wedev-api.sky.pro/api/user/login";
+
+
+ export let token;
+ export const setToken = (newToken) => {
+    token = newToken;
+ };
+
+ //get
 export function getApi () {
-   return fetch("https://wedev-api.sky.pro/api/v1/asya-popova/comments",{
+   return fetch(apiUrl,{
  method:"GET",
- 
+ headers: {
+ Authorization: `Bearer ${token}`,
+  },
  })
  .then((response) => {
   return response.json();
  })
 
 };
-
-export function postApi ({name, text}){
-  return fetch ("https://wedev-api.sky.pro/api/v1/asya-popova/comments",{
+//post
+export function postApi (name, text){
+  return fetch (apiUrl,{
  method:"POST",
  body: JSON.stringify({
  name: name,
  text: text,
+ headers: {
+    Authorization: `Bearer ${token}`,
+     },
+ 
  }),
  })
  .then ((response) => {
@@ -29,3 +46,16 @@ export function postApi ({name, text}){
     }
     })
 };
+
+export function login (login, password){
+   return fetch (userUrl,{
+  method:"POST",
+  body: JSON.stringify({
+   login,
+   password,
+ }),
+  })
+   .then ((response) => {
+     return response.json ();
+   });
+}
