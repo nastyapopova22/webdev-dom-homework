@@ -2,6 +2,10 @@
 const apiUrl = "https://wedev-api.sky.pro/api/v2/asya-popova/comments";
 const userUrl = "https://wedev-api.sky.pro/api/user/login";
 
+export let userName;
+export const setUserName = (newUserName) => {
+  userName = newUserName;
+};
 
  export let token;
  export const setToken = (newToken) => {
@@ -26,8 +30,16 @@ export function postApi (name, text){
   return fetch (apiUrl,{
  method:"POST",
  body: JSON.stringify({
- name: name,
- text: text,
+ name: name
+ .replaceAll("&", "&amp;")
+ .replaceAll("<", "&lt;")
+ .replaceAll(">", "&gt;")
+ .replaceAll('"', "&quot;"),
+ text: text
+ .replaceAll("&", "&amp;")
+ .replaceAll("<", "&lt;")
+ .replaceAll(">", "&gt;")
+ .replaceAll('"', "&quot;"),
  headers: {
     Authorization: `Bearer ${token}`,
      },

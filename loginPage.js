@@ -1,7 +1,7 @@
-import { login, setToken, token } from "./api.js";
+import { login, setToken, token, setUserName, userName } from "./api.js";
 
 
-export const renderLogin = () => {
+export const renderLogin = ({getComments}) => {
   const appElement = document.getElementById("app");
   const loginHtml = 
     ` <div class="form">
@@ -22,22 +22,23 @@ export const renderLogin = () => {
     `;
 
   appElement.innerHTML = loginHtml;
-
   const buttonElement = document.getElementById("login-button");  // 2. Создаем кнопку Войти 
   const loginInputElement = document.getElementById("login-input");// 4.создаем переменные, которые вложим в функцию клика
   const passwordInputElement = document.getElementById("password-input");// 4.создаем переменные
  
  // 2.1. навешиваем обработку клика
 
-  buttonElement.addEventListener("click", () => {
+ buttonElement.addEventListener("click", () => {
     login({ // 3.вызываем функцию
       login: loginInputElement.value,
       password: passwordInputElement.value,
-    })
-      .then((responseData) => {
-        console.log(token);
+    }).then((responseData) => {
+          console.log(token);
         setToken(responseData.user.token);
-        console.log(token);
+        setUserName (responseData.user.name);
+          console.log(userName);
+      }).then (()=>{
+        getComments();
       });
-      });
+    });
 };
