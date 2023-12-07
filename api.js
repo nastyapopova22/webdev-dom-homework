@@ -1,23 +1,15 @@
+import { getToken, setToken } from "./main.js";
 
 const apiUrl = "https://wedev-api.sky.pro/api/v2/asya-popova/comments";
 const userUrl = "https://wedev-api.sky.pro/api/user/login";
 
-export let userName;
-export const setUserName = (newUserName) => {
-  userName = newUserName;
-};
-
- export let token;
- export const setToken = (newToken) => {
-    token = newToken;
- };
 
  //get
 export function getApi () {
    return fetch(apiUrl,{
  method:"GET",
  headers: {
- Authorization: `Bearer ${token}`,
+ Authorization: `Bearer ${getToken()}`,
   },
  })
  .then((response) => {
@@ -26,7 +18,7 @@ export function getApi () {
 
 };
 //post
-export function postApi (name, text){
+export function postApi ({name, text}){
   return fetch (apiUrl,{
  method:"POST",
  body: JSON.stringify({
@@ -40,11 +32,12 @@ export function postApi (name, text){
  .replaceAll("<", "&lt;")
  .replaceAll(">", "&gt;")
  .replaceAll('"', "&quot;"),
- headers: {
-    Authorization: `Bearer ${token}`,
-     },
+ 
  
  }),
+ headers: {
+  Authorization: `Bearer ${getToken()}`,
+   },
  })
  .then ((response) => {
     if (response.status === 201){
@@ -59,7 +52,7 @@ export function postApi (name, text){
     })
 };
 
-export function login (login, password){
+export function login ({login, password}){
    return fetch (userUrl,{
   method:"POST",
   body: JSON.stringify({
@@ -69,5 +62,8 @@ export function login (login, password){
   })
    .then ((response) => {
      return response.json ();
+   }).then ((responseData) =>{
+    setToken (responseData.user.token);
+
    });
 }

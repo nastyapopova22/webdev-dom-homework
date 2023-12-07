@@ -1,17 +1,22 @@
 import { postApi } from "./api.js";
+import { getComments } from "./main.js";
 
-export function renderForm ({blocks ,listElement} ){
-    const appElement = document.getElementById("app");
-    
-    const blocksHtml = blocks .map((block, index) =>{
-        //  console.log (block);
-        return `<li class="comment">
+export function renderForm({ blocks}) {
+  const appElement = document.getElementById("app");
+  //const appElement = document.querySelector(".container");
+  console.log (blocks);
+  const blocksHtml = blocks
+    .map((block, index) => {
+      //  console.log (block);
+      return `<li class="comment">
               <div class="comment-header">
                 <div>
                    ${block.name} </div>
                 <div>${block.time}</div>
               </div>
-              <div class="comment-body"  data-comment ="${block.comment}" data-name ="${block.name}"  >
+              <div class="comment-body"  data-comment ="${
+                block.comment
+              }" data-name ="${block.name}"  >
                 <div class="comment-text" >
                   ${block.comment} 
                 </div>
@@ -19,14 +24,17 @@ export function renderForm ({blocks ,listElement} ){
               <div class="comment-footer">
                 <div class="likes">
                   <span class="likes-counter">${block.likes} </span>
-                  <button   class="like-button ${block.isLike ? '-active-like' : ''}"  data-index="${index}"></button>
+                  <button   class="like-button ${
+                    block.isLike ? "-active-like" : ""
+                  }"  data-index="${index}"></button>
                 </div>
               </div>
             </li> `;
-          })
-          .join(""); 
-        
-          const appHtml = `<div class="container">
+    })
+    .join("");
+
+  const appHtml = ` 
+          <div class= "container"> 
           <div id="loader-comment">Комментарии загружаются...</div>
           <ul id="List" class="comments">${blocksHtml} 
     <!--список рендерится из js-->
@@ -49,107 +57,103 @@ export function renderForm ({blocks ,listElement} ){
               <button id="add-button" class="add-form-button">Написать</button>
             </div>
           </div>
-        </div>`;
-          
-         appElement.innerHTML = appHtml;  
+          <a href="login.html" id="link-to-tasks"> Авторизоваться</a>
+        </div>  `;
+  appElement.innerHTML = appHtml;
 
-         const buttonElement = document.getElementById("add-button");
-        
-         const nameInputElement = document.getElementById("name-input");
-         const textInputElement = document.getElementById("color-input");
-         const today = new Date();
-         const addLoaderComment = document.getElementById("add-loader-comment");
-         const timeNow = today.toLocaleString();
-         const listElement = document.getElementById("List");
+  const buttonElement = document.getElementById("add-button");
 
-         const initEventListeners = () =>{
-            const likesElements = document.querySelectorAll('.like-button');
-            for (const likeElement of likesElements) {
-            likeElement.addEventListener('click', () => {
-              const index = likeElement.dataset.index;
-              if (blocks [index].isLike === false){   //если не поставлен
-                blocks [index].isLike = true; //ставим
-                blocks [index].likes++; //и +1 к счетчику лайков
-              } else { //в ином случае
-                blocks [index].isLike = false; //убираем
-                blocks [index].likes--; //вычитаем лайк
-              }
-             renderblocks (); 
-            
-            });
-            }
-            };
-            initEventListeners();
-            
-            
-            const commentEventListeners = () =>{
-            const commentsElements = document.querySelectorAll(".comment-body");
-            for (const commentElement of commentsElements) {
-            commentElement.addEventListener('click', (event) => {
-              event.stopPropagation();
-              const thisComment =  commentElement.dataset.comment;
-              const thisName = commentElement.dataset.name;
-              textInputElement.value += `${thisName} : ${thisComment}`;
-            });
-            }
-            };
-            
-            const renderblocks  = () =>{ 
-             renderForm ({blocks ,listElement});
-           
-             initEventListeners();
-             commentEventListeners();    
-            };
-            getComments ();
-         addLoaderComment.style.display = 'none';
-         buttonElement.addEventListener("click", () => {  // создаем клик для обработки пост запроса
- 
-            nameInputElement.classList.remove("error"); // пустое поле 
-           if (nameInputElement.value === "" || textInputElement.value === "") {  
-             console.log ("error")
-             nameInputElement.classList.add("error");
-           return;
-           }
-          
-           document.querySelector('.add-form').style.display = 'none';
-           addLoaderComment.style.display = "block";
-          
-           postComment();
-           renderblocks ();
-           nameInputElement.value = "";
-           textInputElement.value = "";
-           });          
-           function postComment() { // пост запрос
-            postApi (
-              {
-                name: nameInputElement.value, 
-                text: textInputElement.value
-              }
-            )
-           .then(() => {
-           return getComments();
-           })
-           .then (() => {
-           document.getElementById("add-form").style.display = 'flex';
-           addLoaderComment.style.display = 'none';
-           nameInputElement.value = "";
-           textInputElement.value = "";
-           }).catch((error) => {
-           document.getElementById("add-form").style.display = 'flex';
-           addLoaderComment.style.display = 'none';
-           if (error.message === "Сервер сломался") {
-               alert('Сервер сломался, попробуйте позже');
-              }
-            if (error.message === "Плохой запрос") {
-                alert('Имя и комментарий должны быть не короче 3х символов');
-              }
-            else {
-               alert("Кажется у вас сломался интернет, попробуйте позже")
-              }    
-           console.log(error);
-           });
-           };
+  const nameInputElement = document.getElementById("name-input");
+  const textInputElement = document.getElementById("color-input");
+  const today = new Date();
+  const addLoaderComment = document.getElementById("add-loader-comment");
+  const timeNow = today.toLocaleString();
+  const listElement = document.getElementById("List");
+
+  const initEventListeners = () => {
+    const likesElements = document.querySelectorAll(".like-button");
+    for (const likeElement of likesElements) {
+      likeElement.addEventListener("click", () => {
+        const index = likeElement.dataset.index;
+        if (blocks[index].isLike === false) {
+          //если не поставлен
+          blocks[index].isLike = true; //ставим
+          blocks[index].likes++; //и +1 к счетчику лайков
+        } else {
+          //в ином случае
+          blocks[index].isLike = false; //убираем
+          blocks[index].likes--; //вычитаем лайк
+        }
+        renderForm({blocks});
+      });
+    }
+  };
+  initEventListeners();
+
+  const commentEventListeners = () => {
+    const commentsElements = document.querySelectorAll(".comment-body");
+    for (const commentElement of commentsElements) {
+      commentElement.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const thisComment = commentElement.dataset.comment;
+        const thisName = commentElement.dataset.name;
+        textInputElement.value += `${thisName} : ${thisComment}`;
+      });
+    }
+  };
+
+  
+ // getComments();
+  addLoaderComment.style.display = "none";
+  buttonElement.addEventListener("click", () => {
+    // создаем клик для обработки пост запроса
+
+    nameInputElement.classList.remove("error"); // пустое поле
+    if (nameInputElement.value === "" || textInputElement.value === "") {
+      console.log("error");
+      nameInputElement.classList.add("error");
+      return;
+    }
+
+    document.querySelector(".add-form").style.display = "none";
+    addLoaderComment.style.display = "block";
+
+    postComment();
+    nameInputElement.value = "";
+    textInputElement.value = "";
+  });
+  function postComment() {
+    console.log (nameInputElement.value);
+    postApi({
+      name: nameInputElement.value,
+      text: textInputElement.value,
+    })
+      .then(() => {
+        return getComments();
+      })
+      .then(() => {
+        document.getElementById("add-form").style.display = "flex";
+        addLoaderComment.style.display = "none";
+        nameInputElement.value = "";
+        textInputElement.value = "";
+      })
+      .catch((error) => {
+        document.getElementById("add-form").style.display = "flex";
+        addLoaderComment.style.display = "none";
+        if (error.message === "Сервер сломался") {
+          alert("Сервер сломался, попробуйте позже");
+        }
+        if (error.message === "Плохой запрос") {
+          alert("Имя и комментарий должны быть не короче 3х символов");
+        } else {
+          alert("Кажется у вас сломался интернет, попробуйте позже");
+        }
+        console.log(error);
+      });
+  }
+}
+ export const renderblocks = (blocks) => {
+  renderForm({ blocks });
+
 };
 
-
-// tasksHtml = blockHtml
